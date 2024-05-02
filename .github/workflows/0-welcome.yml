@@ -1,12 +1,32 @@
 name: Post welcome comment
+
+# This step triggers after the learner creates a new repository from the template.
+# This workflow updates from step 0 to step 1.
+
+# This will run every time we create push a commit to `main`.
+# Reference: https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
   pull_request:
     types: [opened]
+
+# Reference: https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 permissions:
+  # Need `contents: read` to checkout the repository.
+  # Need `contents: write` to update the step metadata.
+  contents: write
   pull-requests: write
+
 jobs:
+  # Get the current step to only run the main job when the learner is on the same step.
   build:
     name: Post welcome comment
+    runs-on: ubuntu-latest
+  get_current_step:
+    name: Check current step number
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,7 +39,8 @@ jobs:
 
   on_start:
     name: On start
-    needs: build
+    needs: get_current_step
+
     # We will only run this action when:
     # 1. This repository isn't the template repository.
     # 2. The step is currently 0.
