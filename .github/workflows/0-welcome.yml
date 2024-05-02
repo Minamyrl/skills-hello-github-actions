@@ -5,7 +5,7 @@ on:
 permissions:
   pull-requests: write
 jobs:
-  build:
+  get_current_step:
     name: Post welcome comment
     runs-on: ubuntu-latest
     steps:
